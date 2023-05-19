@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from hhapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('hhapp.urls', namespace='hh'))
+    path('', include('hhapp.urls', namespace='hh')),
+
 ]
