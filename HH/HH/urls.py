@@ -20,5 +20,5 @@ from hhapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('hhapp.urls', namespace='hh')),
-
+    path('', include('usersapp.urls', namespace='hh')
 ]
