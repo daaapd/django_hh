@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %} Поиск {% endblock %}
+
+{% block head %}Форма для поиска{% endblock %}
+
+{% block body %}
+    {% load static %}
+    <section class="page-section clearfix">
+        <div class="container">
+            <div class="intro">
+                <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static '/assets/img/640915.jpg' %}" alt="...">
+                <div class="intro-text left-0 text-center bg-faded p-5 rounded">
+                    <dl>
+                           <dt> {{ object.name }}</dt>
+                                <dd>Индекс для hh.ru:{{object.ind_hh}}</dd>
+                                <dd>Индекс для zarp.ru:{{object.ind_zarp}}</dd>
+                                <dd>Индекс для superjob.ru:{{object.ind_super}}</dd>
+
+                     </dl>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
