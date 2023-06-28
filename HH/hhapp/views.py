@@ -2,12 +2,17 @@ import os
 
 from django.shortcuts import render
 
-from .forms import ReqForm
+from .forms import ReqForm,UserReqForm,AuthReqForm
 from django.urls import reverse_lazy,reverse
-from .models import Vacancy, Word, Wordskill,Area
+from .models import Vacancy, Word, Wordskill,Area,Schedule
 from hhapp.management.commands.full_db import Command
+
 from django.views.generic import ListView,DetailView,DeleteView,CreateView,UpdateView
 from django.views.generic.base import ContextMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+
+
 
 def start(request):
     return render(request, 'hhapp/index.html')
@@ -25,12 +30,14 @@ def result(request):
             vac = form.cleaned_data['vacancy']
             where = form.cleaned_data['where']
             pages = form.cleaned_data['pages']
-            print(vac, where, pages, sep='\n')
+            #print(vac, where, pages, sep='\n')
+            areas = [Area.objects.filter(id=it).first() for it in request.POST.getlist('areas')]
+            schedule = [Schedule.objects.filter(id=it).first() for it in request.POST.getlist('schedules')]
             com = Command(vac, pages, where)
             com.handle()
             v = Word.objects.get(word=vac)
             s = Wordskill.objects.filter(id_word_id=v.id).all()
-            vac = Vacancy.objects.filter(word_id=v).all()
+            vac = Vacancy.objects.filter(Q(word_id=v) & Q(area__in=areas) &Q(schedule__in=schedules)).order_by('published').all()
             print(vac, v, s, sep='\n')
             return render(request, 'hhapp/about.html', context={'vac': vac, 'word': v, 'skills': s})
         else:
