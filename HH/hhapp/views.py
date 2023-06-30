@@ -39,17 +39,20 @@ def result(request):
             s = Wordskill.objects.filter(id_word_id=v.id).all()
             vac = Vacancy.objects.filter(Q(word_id=v) & Q(area__in=areas) &Q(schedule__in=schedules)).order_by('published').all()
             print(vac, v, s, sep='\n')
-            return render(request, 'hhapp/about.html', context={'vac': vac, 'word': v, 'skills': s})
+            return render(request, 'hhapp/about.html', context={'vac': vac, 'word': v, 'skills': s,'result':'результаты запроса'})
         else:
             form1 = ReqForm
             return render(request, 'hhapp/form.html', context={'form': form1})
 
+
+
 class AreaList(ListView):
     model = Area
     template_name = 'happ/area_list.html'
+    paginate_by = 5
 
     def get_queryset(self):
-        return Area.object.order_by('name').all()
+        return Area.active_object.order_by('name')
 
 class AreaDetail(DetailView):
     model = Area
