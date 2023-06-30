@@ -2,15 +2,27 @@ from django.db import models
 from django.db.models import Model, CharField, TextField, DateTimeField, ForeignKey
 from django.db.models import ManyToManyField, URLField, FloatField, IntegerField
 
+class ActiveManager(models.Manager):
 
+    def get_queryset(self):
+        all_objects = super().get_queryset()
+        return all_objects.filter(is_active=True)
 class Area(Model):
+    object = models.Manager()
+    active_objects = ActiveManager()
     name = CharField(max_length=30, verbose_name='Регион')
     ind_hh = IntegerField(verbose_name='Номер HH', blank=True, null=True, default=0)
     ind_zarp = IntegerField(verbose_name='Номер Zarplata', blank=True, null=True, default=0)
     ind_super = IntegerField(verbose_name='Номер SuperJob', blank=True, null=True, default=0)
-
+    is_active = models.BooleanField(default=False)
     def __str__(self):
         return self.name
+
+    def __eq__(self, other):
+        if not isinstance(self, type(other)) or self.name != other.name or self.ind_hh != other.ind_hh \
+                and self.ind_zarp == other.ind_zarp and other.ind_super == self.ind_super:
+           return True
+        return False
 
     class Meta:
         verbose_name = 'Название региона'
